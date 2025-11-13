@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 app.use(cors());
 app.use(express.json());
 
@@ -29,6 +29,18 @@ async function run() {
     app.get("/events", async (req, res) => {
       const result = await eventCollection.find().toArray();
       res.send(result);
+    });
+
+    app.get("/events/:id", async (req, res) => {
+      const { id } = req.params;
+      console.log(id);
+      const objectId = new ObjectId(id);
+      const result = await eventCollection.findOne({ _id: objectId });
+
+      res.send({
+        success: true,
+        result,
+      });
     });
 
     app.post("/events", async (req, res) => {
