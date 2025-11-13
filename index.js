@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+require("dotenv").config();
 const port = 3000;
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
@@ -41,6 +42,14 @@ async function run() {
         success: true,
         result,
       });
+    });
+
+    app.get("/joined-events", async (req, res) => {
+      const email = req.query.email;
+      const result = await eventCollection
+        .find({ created_by: email })
+        .toArray();
+      res.send(result);
     });
 
     app.post("/events", async (req, res) => {
